@@ -74,7 +74,7 @@ jobs:
       - name: Install Helm chart
         run: |
           ls -lah
-          helm install --wait --timeout 1m --generate-name ./charts/terraform-cloud-operator \
+          helm install --wait --timeout 1m this ./charts/terraform-cloud-operator \
             --set operator.image.repository=${{ env.DOCKER_IMAGE }} \
             --set operator.image.tag=${{ env.DOCKER_METADATA_OUTPUT_VERSION }} \
             --set operator.syncPeriod=30s \
