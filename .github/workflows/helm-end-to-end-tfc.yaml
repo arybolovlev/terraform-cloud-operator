@@ -70,7 +70,6 @@ jobs:
         with:
           platforms: linux/amd64
           push: true
-          load: true
           tags: ${{ env.DOCKER_REGISTRY}}/${{ env.DOCKER_METADATA_OUTPUT_TAGS }}
 
       - name: Install Helm chart
