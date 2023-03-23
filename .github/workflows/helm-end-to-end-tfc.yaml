@@ -80,7 +80,7 @@ jobs:
           helm install --wait --timeout 1m \
             this ./charts/terraform-cloud-operator \
             --set operator.image.repository=${{ env.DOCKER_REGISTRY}}/${{ env.DOCKER_IMAGE }} \
-            --set operator.image.tag=${{ env.DOCKER_METADATA_OUTPUT_VERSION }} \
+            --set operator.image.tag=${{ env.DOCKER_METADATA_OUTPUT_TAGS }} \
             --set operator.syncPeriod=30s \
             --set controllers.agentPool.workers=5 \
             --set controllers.module.workers=5 \
