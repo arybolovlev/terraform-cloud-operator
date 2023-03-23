@@ -77,7 +77,7 @@ jobs:
       
       - name: Upload Docker image to kind
         run: |
-           kind load docker-image tf-k8s-acc-webhook --name=${{ env.CLUSTER_NAME }}
+           kind load docker-image ${{ DOCKER_METADATA_OUTPUT_TAGS }} --name=${{ env.CLUSTER_NAME }}
 
       - name: Install Helm chart
         run: |
