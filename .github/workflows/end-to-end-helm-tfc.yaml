@@ -1,6 +1,14 @@
 name: Helm E2E on Terraform Cloud
 
 on:
+  schedule:
+    - cron: '30 6 * * *'
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 env:
@@ -33,7 +41,7 @@ jobs:
         with:
           version: v3.11.2
 
-      - name: Docker image metadata
+      - name: Generate Docker image metadata
         id: meta
         uses: docker/metadata-action@v4
         with:
@@ -55,13 +63,14 @@ jobs:
           platforms: linux/amd64
           push: false
           load: true
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ env.DOCKER_METADATA_OUTPUT_TAGS }}
 
       - name: Install Helm chart
         run: |
-          helm install --wait --timeout 2m \
+          helm install --wait --timeout 1m \
             this ./charts/terraform-cloud-operator \
-            --set operator.image.tag=${{ steps.meta.outputs.tags }} \
+            --set operator.image.repository=${{ env.DOCKER_IMAGE }} \
+            --set operator.image.tag=${{ env.DOCKER_METADATA_OUTPUT_VERSION }} \
             --set operator.syncPeriod=30s \
             --set controllers.agentPool.workers=5 \
             --set controllers.module.workers=5 \
