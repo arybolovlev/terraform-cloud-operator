@@ -26,7 +26,7 @@ jobs:
         uses: helm/kind-action@d8ccf8fb623ce1bb360ae2f45f323d9d5c5e9f00 # v1.5.0
         with:
           wait: 2m
-          version: v${{ github.event.inputs.kindVersion }}
+          version: v0.17.0
 
       - name: Set up Helm
         uses: azure/setup-helm@5119fcb9089d432beecbf79bb2c7915207344b78 # v3.5
