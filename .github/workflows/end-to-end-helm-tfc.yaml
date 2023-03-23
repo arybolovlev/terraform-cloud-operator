@@ -59,7 +59,7 @@ jobs:
 
       - name: Install Helm chart
         run: |
-          helm install --wait \
+          helm install --wait --timeout 2m \
             this ./charts/terraform-cloud-operator \
             --set operator.image.tag=${{ steps.meta.outputs.tags }} \
             --set operator.syncPeriod=30s \
