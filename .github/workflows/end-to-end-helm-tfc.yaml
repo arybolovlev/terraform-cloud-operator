@@ -1,16 +1,32 @@
 name: Helm E2E on Terraform Cloud
 
 on:
+  # schedule:
+  #   - cron: '30 6 * * *'
+  # pull_request:
+  #   branches:
+  #     - main
+  # push:
+  #   branches:
+  #     - main
   workflow_dispatch:
 
 env:
   KUBECONFIG: ${{ github.workspace }}/.kube/config
   USE_EXISTING_CLUSTER: true
   DOCKER_IMAGE: tfc-operator
+  DOCKER_REGISTRY: "localhost:5000"
 
 jobs:
   tests:
     runs-on: ubuntu-latest
+
+    services:
+      registry:
+        image: registry:2
+        ports:
+          - 5000:5000
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f # v3.4.0
@@ -53,16 +69,16 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           platforms: linux/amd64
-          push: false
+          push: true
           load: true
-          tags: ${{ env.DOCKER_METADATA_OUTPUT_TAGS }}
+          tags: ${{ env.DOCKER_REGISTRY}}/${{ env.DOCKER_METADATA_OUTPUT_TAGS }}
 
       - name: Install Helm chart
         run: |
           ls -lah
           helm install --wait --timeout 1m \
             this ./charts/terraform-cloud-operator \
-            --set operator.image.repository=${{ env.DOCKER_IMAGE }} \
+            --set operator.image.repository=${{ env.DOCKER_REGISTRY}}/${{ env.DOCKER_IMAGE }} \
             --set operator.image.tag=${{ env.DOCKER_METADATA_OUTPUT_VERSION }} \
             --set operator.syncPeriod=30s \
             --set controllers.agentPool.workers=5 \
